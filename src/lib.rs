@@ -28,14 +28,8 @@ pub extern "C" fn derive_key_c(
     unsafe {
         let path_str = std::str::from_utf8(std::slice::from_raw_parts(path, pathlen))
             .expect("Failed to convert string from raw parts");
-        let derivation_path: DerivationPath = path_str.parse().unwrap();
         let seed_slice = std::slice::from_raw_parts(seed, seedlen);
-        let extended = ExtendedSecretKey::from_seed(seed_slice)
-            .and_then(|extended| extended.derive(&derivation_path))
-            .unwrap();
-        let extended_public_key = extended.public_key();
-        let keypair = Keypair{secret: extended.secret_key, public: extended_public_key};
-        let boxed_keypair = Box::new(keypair.to_bytes());
+        let boxed_keypair = derive_key(seed_slice, path_str);
         Box::into_raw(boxed_keypair) as *mut u8
     }
 }
