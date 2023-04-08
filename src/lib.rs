@@ -1,6 +1,8 @@
 extern crate ed25519_dalek_bip32;
 use ed25519_dalek_bip32::{ed25519_dalek::{Keypair}, DerivationPath, ExtendedSecretKey};
+use wasm_bindgen::prelude::*;
 
+#[wasm_bindgen]
 /// derive_key generates keypair from seed and bip32 hierarchical derivation path.
 /// it returns 64 bytes. first 32 bytes are secret key, and the second 32 bytes are public key.
 pub fn derive_key(
