@@ -1,4 +1,5 @@
 extern crate ed25519_dalek_bip32;
+extern crate wasm_bindgen;
 use ed25519_dalek_bip32::{ed25519_dalek::{Keypair}, DerivationPath, ExtendedSecretKey};
 use wasm_bindgen::prelude::*;
 
