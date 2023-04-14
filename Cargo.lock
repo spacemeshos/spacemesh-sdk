@@ -132,7 +132,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "ed25519_bip32_wasm"
+name = "ed25519_bip32"
 version = "0.1.0"
 dependencies = [
  "ed25519-dalek-bip32",
