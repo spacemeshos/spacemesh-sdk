@@ -1,7 +1,6 @@
 extern crate ed25519_dalek_bip32;
 extern crate wasm_bindgen;
 use ed25519_dalek_bip32::{ed25519_dalek::{Keypair}, DerivationPath, ExtendedSecretKey, ChildIndex};
-use ed25519_dalek_bip32::derivation_path::DerivationPathType::BIP44;
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
@@ -37,7 +36,7 @@ macro_rules! check_err {
 
 macro_rules! err {
     ($str:expr) => {
-        eprint!($str);
+        eprintln!($str);
         return std::ptr::null_mut();
     };
 }
@@ -61,13 +60,21 @@ pub extern "C" fn derive_c(
         check_err!(derivation_path, "failed to parse derivation path");
         let derivation_path_inner: DerivationPath = derivation_path.unwrap();
 
-        // make sure path is of the correct type and is hardened
-        if derivation_path_inner.path_type() != BIP44 {
-            eprintln!("path is not of type BIP44");
-            return std::ptr::null_mut();
+        // for now we are rather strict with which types of paths we accept,
+        // to avoid errors. the path must be of the format
+        // "m/44'/540'/{x}'/{x}'/{x}'", i.e., it must have purpose 44 and coin type
+        // 540, it must be of length 5, and all path elements must be hardened.
+        if derivation_path_inner.path().len() != 5 {
+            err!("bad path length");
         }
-        for p in &derivation_path_inner {
-            if p.is_hardened() {
+        if derivation_path_inner.path()[0].to_u32() != 44 {
+            err!("bad path purpose");
+        }
+        if derivation_path_inner.path()[1].to_u32() != 540 {
+            err!("bad path coin type");
+        }
+        for p in derivation_path_inner.path() {
+            if !p.is_hardened() {
                 err!("path isn't fully hardened");
             }
         }
@@ -90,11 +97,11 @@ pub extern "C" fn derive_c(
 pub extern "C" fn derive_child_c(
     seed: *const u8,
     seedlen: usize,
-    childidx: u8,
+    childidx: u32,
 ) -> *mut u8 {
     unsafe {
         let seed_slice = std::slice::from_raw_parts(seed, seedlen);
-        let child_index = ChildIndex::hardened(childidx as u32);
+        let child_index = ChildIndex::hardened(childidx);
         check_err!(child_index, "bad child index");
         let child_index_inner = child_index.unwrap();
         let extended = ExtendedSecretKey::from_seed(seed_slice)
