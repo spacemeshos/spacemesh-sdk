@@ -41,6 +41,24 @@ macro_rules! err {
     };
 }
 
+/// from_seed_c derives a new extended secret key from a seed
+#[no_mangle]
+pub extern "C" fn from_seed_c(
+    seed: *const u8,
+    seedlen: usize,
+) -> *mut u8 {
+    unsafe {
+        let seed_slice = std::slice::from_raw_parts(seed, seedlen);
+        let extended = ExtendedSecretKey::from_seed(seed_slice);
+        check_err!(extended, "failed to derive secret key from seed");
+        let extended_inner = extended.unwrap();
+        let extended_public_key = extended_inner.public_key();
+        let keypair = Keypair{secret: extended_inner.secret_key, public: extended_public_key};
+        let boxed_keypair = Box::new(keypair.to_bytes());
+        Box::into_raw(boxed_keypair) as *mut u8
+    }
+}
+
 /// derive_c does the same thing as the above function, but is intended for use over the CFFI.
 /// it adds error handling in order to be friendlier to the FFI caller: in case of an error, it
 /// prints the error and returns a null pointer.

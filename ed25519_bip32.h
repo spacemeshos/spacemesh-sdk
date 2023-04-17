@@ -20,6 +20,9 @@ uint8_t *derive_c(const uint8_t *seed, size_t seedlen, const uint8_t *path, size
 /// derive_child_c derives a new child key from a seed and a single hardened path element.
 /// the childidx always refers to a hardened path element, as we do not support non-hardened paths.
 /// note that the caller must free() the returned memory as it's not managed/freed here.
-uint8_t *derive_child_c(const uint8_t *seed, size_t seedlen, uint8_t childidx);
+uint8_t *derive_child_c(const uint8_t *seed, size_t seedlen, uint32_t childidx);
+
+/// from_seed_c derives a new extended secret key from a seed
+uint8_t *from_seed_c(const uint8_t *seed, size_t seedlen);
 
 } // extern "C"
