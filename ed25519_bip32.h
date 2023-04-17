@@ -11,8 +11,15 @@
 
 extern "C" {
 
-/// derive_key_c does the same thing as the above function, but is intended for use over the CFFI.
+/// derive_c does the same thing as the above function, but is intended for use over the CFFI.
+/// it adds error handling in order to be friendlier to the FFI caller: in case of an error, it
+/// prints the error and returns a null pointer.
 /// note that the caller must free() the returned memory as it's not managed/freed here.
-uint8_t *derive_key_c(const uint8_t *seed, size_t seedlen, const uint8_t *path, size_t pathlen);
+uint8_t *derive_c(const uint8_t *seed, size_t seedlen, const uint8_t *path, size_t pathlen);
+
+/// derive_child_c derives a new child key from a seed and a single hardened path element.
+/// the childidx always refers to a hardened path element, as we do not support non-hardened paths.
+/// note that the caller must free() the returned memory as it's not managed/freed here.
+uint8_t *derive_child_c(const uint8_t *seed, size_t seedlen, uint8_t childidx);
 
 } // extern "C"
