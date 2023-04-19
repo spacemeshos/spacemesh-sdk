@@ -108,6 +108,17 @@ pub extern "C" fn derive_c(
     }
 }
 
+/// free the memory allocated and returned by derive_key_c by transferring ownership back to Rust.
+/// must be called on the pointer returned by derive_key_c precisely once to ensure safety.
+#[no_mangle]
+pub extern "C" fn derive_free_c(ptr: *mut u8) {
+    unsafe {
+        if !ptr.is_null() {
+            let _ = Box::from_raw(ptr);
+        }
+    }
+}
+
 /// derive_child_c derives a new child key from a seed and a single hardened path element.
 /// the childidx always refers to a hardened path element, as we do not support non-hardened paths.
 /// note that the caller must free() the returned memory as it's not managed/freed here.
