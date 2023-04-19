@@ -41,7 +41,9 @@ macro_rules! err {
     };
 }
 
-/// from_seed_c derives a new extended secret key from a seed
+/// from_seed_c derives a new extended secret key from a seed.
+/// note that the caller must call derive_free_c() to free the returned memory as ownership is
+/// transferred to the caller.
 #[no_mangle]
 pub extern "C" fn from_seed_c(
     seed: *const u8,
@@ -62,7 +64,8 @@ pub extern "C" fn from_seed_c(
 /// derive_c does the same thing as the above function, but is intended for use over the CFFI.
 /// it adds error handling in order to be friendlier to the FFI caller: in case of an error, it
 /// prints the error and returns a null pointer.
-/// note that the caller must free() the returned memory as it's not managed/freed here.
+/// note that the caller must call derive_free_c() to free the returned memory as ownership is
+/// transferred to the caller.
 #[no_mangle]
 pub extern "C" fn derive_c(
     seed: *const u8,
@@ -121,7 +124,8 @@ pub extern "C" fn derive_free_c(ptr: *mut u8) {
 
 /// derive_child_c derives a new child key from a seed and a single hardened path element.
 /// the childidx always refers to a hardened path element, as we do not support non-hardened paths.
-/// note that the caller must free() the returned memory as it's not managed/freed here.
+/// note that the caller must call derive_free_c() to free the returned memory as ownership is
+/// transferred to the caller.
 #[no_mangle]
 pub extern "C" fn derive_child_c(
     seed: *const u8,

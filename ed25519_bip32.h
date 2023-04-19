@@ -14,19 +14,23 @@ extern "C" {
 /// derive_c does the same thing as the above function, but is intended for use over the CFFI.
 /// it adds error handling in order to be friendlier to the FFI caller: in case of an error, it
 /// prints the error and returns a null pointer.
-/// note that the caller must free() the returned memory as it's not managed/freed here.
+/// note that the caller must call derive_free_c() to free the returned memory as ownership is
+/// transferred to the caller.
 uint8_t *derive_c(const uint8_t *seed, size_t seedlen, const uint8_t *path, size_t pathlen);
 
 /// derive_child_c derives a new child key from a seed and a single hardened path element.
 /// the childidx always refers to a hardened path element, as we do not support non-hardened paths.
-/// note that the caller must free() the returned memory as it's not managed/freed here.
+/// note that the caller must call derive_free_c() to free the returned memory as ownership is
+/// transferred to the caller.
 uint8_t *derive_child_c(const uint8_t *seed, size_t seedlen, uint32_t childidx);
 
 /// free the memory allocated and returned by the derive functions by transferring ownership back to
 /// Rust. must be called on each pointer returned by the functions precisely once to ensure safety.
 void derive_free_c(uint8_t *ptr);
 
-/// from_seed_c derives a new extended secret key from a seed
+/// from_seed_c derives a new extended secret key from a seed.
+/// note that the caller must call derive_free_c() to free the returned memory as ownership is
+/// transferred to the caller.
 uint8_t *from_seed_c(const uint8_t *seed, size_t seedlen);
 
 } // extern "C"
