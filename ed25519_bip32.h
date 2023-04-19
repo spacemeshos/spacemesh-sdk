@@ -15,4 +15,8 @@ extern "C" {
 /// note that the caller must free() the returned memory as it's not managed/freed here.
 uint8_t *derive_key_c(const uint8_t *seed, size_t seedlen, const uint8_t *path, size_t pathlen);
 
+/// free the memory allocated and returned by derive_key_c by transferring ownership back to Rust.
+/// must be called on the pointer returned by derive_key_c precisely once to ensure safety.
+void derive_key_free_c(uint8_t *ptr);
+
 } // extern "C"

@@ -9,5 +9,10 @@ target/
 # MSVC Windows builds of rustc generate these, which store debugging information
 *.pdb
 
+# Dylibs
+*.so
+*.dylib
+*.dll
+
 # misc
 .idea

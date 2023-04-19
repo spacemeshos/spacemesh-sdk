@@ -36,3 +36,14 @@ pub extern "C" fn derive_key_c(
         Box::into_raw(boxed_keypair) as *mut u8
     }
 }
+
+/// free the memory allocated and returned by derive_key_c by transferring ownership back to Rust.
+/// must be called on the pointer returned by derive_key_c precisely once to ensure safety.
+#[no_mangle]
+pub extern "C" fn derive_key_free_c(ptr: *mut u8) {
+    unsafe {
+        if !ptr.is_null() {
+            let _ = Box::from_raw(ptr);
+        }
+    }
+}
