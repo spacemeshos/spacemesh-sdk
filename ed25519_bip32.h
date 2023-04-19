@@ -22,8 +22,8 @@ uint8_t *derive_c(const uint8_t *seed, size_t seedlen, const uint8_t *path, size
 /// note that the caller must free() the returned memory as it's not managed/freed here.
 uint8_t *derive_child_c(const uint8_t *seed, size_t seedlen, uint32_t childidx);
 
-/// free the memory allocated and returned by derive_key_c by transferring ownership back to Rust.
-/// must be called on the pointer returned by derive_key_c precisely once to ensure safety.
+/// free the memory allocated and returned by derive_c by transferring ownership back to Rust.
+/// must be called on the pointer returned by derive_c precisely once to ensure safety.
 void derive_free_c(uint8_t *ptr);
 
 /// from_seed_c derives a new extended secret key from a seed
