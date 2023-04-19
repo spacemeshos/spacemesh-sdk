@@ -108,8 +108,8 @@ pub extern "C" fn derive_c(
     }
 }
 
-/// free the memory allocated and returned by derive_key_c by transferring ownership back to Rust.
-/// must be called on the pointer returned by derive_key_c precisely once to ensure safety.
+/// free the memory allocated and returned by the derive functions by transferring ownership back to
+/// Rust. must be called on each pointer returned by the functions precisely once to ensure safety.
 #[no_mangle]
 pub extern "C" fn derive_free_c(ptr: *mut u8) {
     unsafe {
