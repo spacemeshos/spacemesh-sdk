@@ -1,3 +1,5 @@
+extern crate ed25519_dalek_bip32;
+extern crate wasm_bindgen;
 use ed25519_dalek_bip32::{ed25519_dalek::{Keypair}, DerivationPath, ExtendedSecretKey};
 use wasm_bindgen::prelude::*;
 
@@ -15,4 +17,33 @@ pub fn derive_key(
     let extended_public_key = extended.public_key();
     let keypair = Keypair{secret: extended.secret_key, public: extended_public_key};
     Box::new(keypair.to_bytes())
+}
+
+/// derive_key_c does the same thing as the above function, but is intended for use over the CFFI.
+/// note that the caller must free() the returned memory as it's not managed/freed here.
+#[no_mangle]
+pub extern "C" fn derive_key_c(
+    seed: *const u8,
+    seedlen: usize,
+    path: *const u8,
+    pathlen: usize,
+) -> *mut u8 {
+    unsafe {
+        let path_str = std::str::from_utf8(std::slice::from_raw_parts(path, pathlen))
+            .expect("Failed to convert string from raw parts");
+        let seed_slice = std::slice::from_raw_parts(seed, seedlen);
+        let boxed_keypair = derive_key(seed_slice, path_str);
+        Box::into_raw(boxed_keypair) as *mut u8
+    }
+}
+
+/// free the memory allocated and returned by derive_key_c by transferring ownership back to Rust.
+/// must be called on the pointer returned by derive_key_c precisely once to ensure safety.
+#[no_mangle]
+pub extern "C" fn derive_key_free_c(ptr: *mut u8) {
+    unsafe {
+        if !ptr.is_null() {
+            let _ = Box::from_raw(ptr);
+        }
+    }
 }
