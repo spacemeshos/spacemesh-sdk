@@ -11,10 +11,10 @@
 
 extern "C" {
 
-/// from_seed_c derives a new extended secret key from a seed.
-/// note that the caller must call derive_free_c() to free the returned memory as ownership is
-/// transferred to the caller.
-/// derive_c does the same thing as derive_key above, but is intended for use over the CFFI.
+/// derive_c generates a keypair from a 64-byte BIP39-compatible seed and BIP32 hierarchical
+/// derivation path. it returns 64 bytes. the first 32 bytes are the secret key and the second 32
+/// bytes are the public key.
+/// this function does the same thing as derive_key, which is bound for wasm rather than CFFI.
 /// it adds error handling in order to be friendlier to the FFI caller: in case of an error, it
 /// prints the error and returns a null pointer.
 /// note that the caller must call derive_free_c() to free the returned memory as ownership is
