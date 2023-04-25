@@ -109,14 +109,3 @@ pub extern "C" fn derive_free_c(ptr: *mut u8) {
         }
     }
 }
-
-// #[cfg(test)]
-// mod test {
-//     use super::*;
-//
-//     #[test]
-//     fn child_index_is_normal() {
-//         assert!(ChildIndex::Hardened(0).is_hardened());
-//         assert!(!ChildIndex::Normal(0).is_hardened());
-//     }
-// }
