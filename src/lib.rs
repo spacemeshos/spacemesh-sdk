@@ -1,6 +1,6 @@
 extern crate ed25519_dalek_bip32;
 extern crate wasm_bindgen;
-use ed25519_dalek_bip32::{ed25519_dalek::{Keypair}, DerivationPath, ExtendedSecretKey, ChildIndex};
+use ed25519_dalek_bip32::{ed25519_dalek::{Keypair}, DerivationPath, ExtendedSecretKey};
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
@@ -41,27 +41,7 @@ macro_rules! err {
     };
 }
 
-/// from_seed_c derives a new extended secret key from a seed.
-/// note that the caller must call derive_free_c() to free the returned memory as ownership is
-/// transferred to the caller.
-#[no_mangle]
-pub extern "C" fn from_seed_c(
-    seed: *const u8,
-    seedlen: usize,
-) -> *mut u8 {
-    unsafe {
-        let seed_slice = std::slice::from_raw_parts(seed, seedlen);
-        let extended = ExtendedSecretKey::from_seed(seed_slice);
-        check_err!(extended, "failed to derive secret key from seed");
-        let extended_inner = extended.unwrap();
-        let extended_public_key = extended_inner.public_key();
-        let keypair = Keypair{secret: extended_inner.secret_key, public: extended_public_key};
-        let boxed_keypair = Box::new(keypair.to_bytes());
-        Box::into_raw(boxed_keypair) as *mut u8
-    }
-}
-
-/// derive_c does the same thing as the above function, but is intended for use over the CFFI.
+/// derive_c does the same thing as derive_key above, but is intended for use over the CFFI.
 /// it adds error handling in order to be friendlier to the FFI caller: in case of an error, it
 /// prints the error and returns a null pointer.
 /// note that the caller must call derive_free_c() to free the returned memory as ownership is
@@ -81,12 +61,16 @@ pub extern "C" fn derive_c(
         check_err!(derivation_path, "failed to parse derivation path");
         let derivation_path_inner: DerivationPath = derivation_path.unwrap();
 
-        // for now we are rather strict with which types of paths we accept,
-        // to avoid errors. the path must be of the format
-        // "m/44'/540'/{x}'/{x}'/{x}'", i.e., it must have purpose 44 and coin type
-        // 540, it must be of length 5, and all path elements must be hardened.
-        if derivation_path_inner.path().len() != 5 {
-            err!("bad path length");
+        // for now we are rather strict with which types of paths we accept, to avoid errors and to
+        // be as compatible as possible with BIP-44. the path must be of the format
+        // "m/44'/540'/...", i.e., it must have purpose 44 and coin type
+        // 540 and all path elements must be hardened. we expect it to contain between 2 and 5
+        // elements.
+        if derivation_path_inner.path().len() < 2 {
+            err!("path too short");
+        }
+        if derivation_path_inner.path().len() > 5 {
+            err!("path too long");
         }
         if derivation_path_inner.path()[0].to_u32() != 44 {
             err!("bad path purpose");
@@ -119,32 +103,6 @@ pub extern "C" fn derive_free_c(ptr: *mut u8) {
         if !ptr.is_null() {
             let _ = Box::from_raw(ptr);
         }
-    }
-}
-
-/// derive_child_c derives a new child key from a seed and a single hardened path element.
-/// the childidx always refers to a hardened path element, as we do not support non-hardened paths.
-/// note that the caller must call derive_free_c() to free the returned memory as ownership is
-/// transferred to the caller.
-#[no_mangle]
-pub extern "C" fn derive_child_c(
-    seed: *const u8,
-    seedlen: usize,
-    childidx: u32,
-) -> *mut u8 {
-    unsafe {
-        let seed_slice = std::slice::from_raw_parts(seed, seedlen);
-        let child_index = ChildIndex::hardened(childidx);
-        check_err!(child_index, "bad child index");
-        let child_index_inner = child_index.unwrap();
-        let extended = ExtendedSecretKey::from_seed(seed_slice)
-            .and_then(|extended| extended.derive_child(child_index_inner));
-        check_err!(extended, "failed to derive child key from seed and child index");
-        let extended_inner = extended.unwrap();
-        let extended_public_key = extended_inner.public_key();
-        let keypair = Keypair{secret: extended_inner.secret_key, public: extended_public_key};
-        let boxed_keypair = Box::new(keypair.to_bytes());
-        Box::into_raw(boxed_keypair) as *mut u8
     }
 }
 
