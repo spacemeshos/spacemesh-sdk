@@ -55,7 +55,7 @@ jobs:
           mkdir artifacts
           mv LICENSE ed25519_bip32.h target/release/libed25519_bip32.${{ matrix.extension }} artifacts
           cd artifacts
-          tar -cvf libed25519_bip32_${{ matrix.name }}.tar.gz *
+          tar -czf libed25519_bip32_${{ matrix.name }}.tar.gz *
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
