@@ -5,8 +5,27 @@ on: push
 #    types: [created]
 
 jobs:
-  release-linux-amd64:
-    runs-on: ubuntu-latest
+  release:
+    strategy:
+      matrix:
+        include:
+          - image: macos-latest
+            name: macos-amd64
+            extension: dylib
+          - image: ubuntu-latest
+            name: linux-amd64
+            extension: so
+          - image: windows-latest
+            name: windows-amd64
+            extension: dll
+          - image: [self-hosted, macos, arm64]
+            name: macos-arm64
+            extension: dylib
+          - image: [self-hosted, linux, arm64]
+            name: linux-arm64
+            extension: so
+    runs-on: ${{ matrix.image }}
+    name: Release ${{ matrix.name }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -16,6 +35,8 @@ jobs:
           toolchain: stable
       - name: Install dependencies
         run: make deps
+      - name: Regenerate C Header and Check
+        run: make diff
       - name: Compile
         uses: actions-rs/cargo@v1
         with:
@@ -25,4 +46,4 @@ jobs:
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
-          files: LICENSE target/release/libed25519_bip32.so
+          files: LICENSE ed25519_bip32.h target/release/libed25519_bip32.${{ matrix.extension }}

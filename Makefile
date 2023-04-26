@@ -1,3 +1,5 @@
+HEADERFN := ed25519_bip32.h
+
 .PHONY: deps
 deps:
 	cargo install wasm-pack cbindgen
@@ -15,7 +17,13 @@ wasm:
 
 .PHONY: cheader
 cheader:
-	cbindgen -c cbindgen.toml -o ed25519_bip32.h
+	cbindgen -c cbindgen.toml -o $(HEADERFN)
+
+# Regenerate the C Header and complain if it's changed
+.PHONY: diff
+diff: cheader
+	@git diff --name-only --diff-filter=AM --exit-code $(HEADERFN) \
+		|| { echo "C header has changed"; exit 1; }
 
 .PHONY: clean
 clean:
