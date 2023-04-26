@@ -12,18 +12,23 @@ jobs:
           - image: macos-latest
             name: macos-amd64
             extension: dylib
+            artifact: libed25519_bip32_macos-amd64.tar.gz
           - image: ubuntu-latest
             name: linux-amd64
             extension: so
+            artifact: libed25519_bip32_linux-amd64.tar.gz
           - image: windows-latest
             name: windows-amd64
             extension: dll
+            artifact: libed25519_bip32_windows-amd64.zip
           - image: [self-hosted, macos, arm64]
             name: macos-arm64
             extension: dylib
+            artifact: libed25519_bip32_macos-arm64.tar.gz
           - image: [self-hosted, linux, arm64]
             name: linux-arm64
             extension: so
+            artifact: libed25519_bip32_linux-arm64.tar.gz
     runs-on: ${{ matrix.image }}
     name: Release ${{ matrix.name }}
     steps:
@@ -41,22 +46,24 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: build
-          args: --release -v
-      - name: List files
-        if: matrix.name == 'windows-amd64'
-        run: ls -laR release
-      - name: List files Pwsh
-        if: matrix.name == 'windows-amd64'
-        shell: pwsh
-        run: |
-          Get-ChildItem -Recurse
-      - name: Create artifacts
+          args: --release
+      - name: Prepare files
+        if: matrix.name != 'windows-amd64'
         run: |
           mkdir artifacts
           mv LICENSE ed25519_bip32.h target/release/libed25519_bip32.${{ matrix.extension }} artifacts
           cd artifacts
           tar -czf libed25519_bip32_${{ matrix.name }}.tar.gz *
+          mv libed25519_bip32_${{ matrix.name }}.tar.gz ..
+      - name: Prepare files Windows
+        if: matrix.name == 'windows-amd64'
+        run: |
+          mkdir artifacts
+          Move-Item -Path LICENSE, ed25519_bip32.h -Destination artifacts
+          # lib filename is different on windows for some reason
+          Move-Item -Path target/release/ed25519_bip32.dll -Destination artifacts/libed25519_bip32.dll
+          Compress-Archive -Path artifacts/* -Destination ${{ matrix.artifact }}
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
-          files: artifacts/libed25519_bip32_${{ matrix.name }}.tar.gz
+          files: ${{ matrix.artifact }}
