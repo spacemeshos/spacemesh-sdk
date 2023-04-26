@@ -1,8 +1,8 @@
 name: Build and Release Dylib
 
-on: push
-#  release:
-#    types: [created]
+on:
+  release:
+    types: [created]
 
 jobs:
   release:
@@ -41,12 +41,22 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: build
-          args: --release
+          args: --release -v
+      - name: List files
+        if: matrix.name == 'windows-amd64'
+        run: ls -laR release
+      - name: List files Pwsh
+        if: matrix.name == 'windows-amd64'
+        shell: pwsh
+        run: |
+          Get-ChildItem -Recurse
+      - name: Create artifacts
+        run: |
+          mkdir artifacts
+          mv LICENSE ed25519_bip32.h target/release/libed25519_bip32.${{ matrix.extension }} artifacts
+          cd artifacts
+          tar -cvf libed25519_bip32_${{ matrix.name }}.tar.gz *
       - name: Release
         uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
         with:
-          files: |
-            LICENSE 
-            ed25519_bip32.h
-            target/release/libed25519_bip32.${{ matrix.extension }}
+          files: artifacts/libed25519_bip32_${{ matrix.name }}.tar.gz
