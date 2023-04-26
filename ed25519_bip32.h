@@ -11,12 +11,18 @@
 
 extern "C" {
 
-/// derive_key_c does the same thing as the above function, but is intended for use over the CFFI.
-/// note that the caller must free() the returned memory as it's not managed/freed here.
-uint8_t *derive_key_c(const uint8_t *seed, size_t seedlen, const uint8_t *path, size_t pathlen);
+/// derive_c generates a keypair from a 64-byte BIP39-compatible seed and BIP32 hierarchical
+/// derivation path. it returns 64 bytes. the first 32 bytes are the secret key and the second 32
+/// bytes are the public key.
+/// this function does the same thing as derive_key, which is bound for wasm rather than CFFI.
+/// it adds error handling in order to be friendlier to the FFI caller: in case of an error, it
+/// prints the error and returns a null pointer.
+/// note that the caller must call derive_free_c() to free the returned memory as ownership is
+/// transferred to the caller.
+uint8_t *derive_c(const uint8_t *seed, size_t seedlen, const uint8_t *path, size_t pathlen);
 
-/// free the memory allocated and returned by derive_key_c by transferring ownership back to Rust.
-/// must be called on the pointer returned by derive_key_c precisely once to ensure safety.
-void derive_key_free_c(uint8_t *ptr);
+/// free the memory allocated and returned by the derive functions by transferring ownership back to
+/// Rust. must be called on each pointer returned by the functions precisely once to ensure safety.
+void derive_free_c(uint8_t *ptr);
 
 } // extern "C"
