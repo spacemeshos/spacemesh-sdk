@@ -1,3 +1,6 @@
+# Note: this workflow only runs BASIC tests. It only tests on Linux. In particular it does not
+# test all of the toolchains used in the release process, doesn't test other platforms/architectures,
+# doesn't test the Wasm toolchain, etc.
 name: Rust
 
 on:

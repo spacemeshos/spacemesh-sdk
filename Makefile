@@ -1,15 +1,12 @@
 HEADERFN := ed25519_bip32.h
 
-.PHONY: deps
-deps:
-	cargo install wasm-pack cbindgen
-
 .PHONY: build
 build:
 	cargo build
 
 .PHONY: wasm
 wasm:
+	cargo install wasm-pack
 	rm -rf ./lib/gen
 	wasm-pack build --target nodejs -d ./lib/gen --out-name bip32
 	rm -rf ./lib/*/.gitignore
@@ -17,6 +14,7 @@ wasm:
 
 .PHONY: cheader
 cheader:
+	cargo install cbindgen
 	cbindgen -c cbindgen.toml -o $(HEADERFN)
 
 # Regenerate the C Header and complain if it's changed
