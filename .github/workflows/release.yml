@@ -1,8 +1,8 @@
 name: Build and Release
 
-on: push
-#  release:
-#    types: [created]
+on:
+  release:
+    types: [created]
 
 jobs:
   release:
@@ -76,4 +76,3 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: ${{ matrix.artifact }}
-          tag_name: v1.0.6
