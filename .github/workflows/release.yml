@@ -1,8 +1,8 @@
 name: Build and Release Dylib
 
-on:
-  release:
-    types: [created]
+on: push
+#  release:
+#    types: [created]
 
 jobs:
   release:
@@ -43,6 +43,7 @@ jobs:
         uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
+          target: ${{ matrix.toolchain }}
       - name: Regenerate C Header and Check
         run: make diff
       - name: Compile
@@ -50,12 +51,15 @@ jobs:
       - name: Compile staticlib
         if: contains(matrix.toolchain, 'musl')
         # Linux requires a different toolchain for static lib generation
-        run: cargo build --release --all-features --target ${{ matrix.toolchain }}
+        # Will overwrite static glibc static lib
+        run: |
+          cargo build --release --all-features --target ${{ matrix.toolchain }}
+          mv target/${{ matrix.toolchain }}/release/libed25519_bip32.a target/release
       - name: Prepare files
         if: matrix.name != 'windows-amd64'
         run: |
           mkdir artifacts
-          mv LICENSE ed25519_bip32.h target/release/libed25519_bip32.${{ matrix.extension }} artifacts
+          mv LICENSE ed25519_bip32.h target/release/libed25519_bip32.${{ matrix.extension }} target/release/libed25519_bip32.a artifacts
           cd artifacts
           tar -czf libed25519_bip32_${{ matrix.name }}.tar.gz *
           mv libed25519_bip32_${{ matrix.name }}.tar.gz ..
@@ -67,7 +71,9 @@ jobs:
           # lib filename is different on windows for some reason
           Move-Item -Path target/release/ed25519_bip32.dll -Destination artifacts/libed25519_bip32.dll
           Compress-Archive -Path artifacts/* -Destination ${{ matrix.artifact }}
-      - name: Release
-        uses: softprops/action-gh-release@v1
-        with:
-          files: ${{ matrix.artifact }}
+          # temporary
+          Get-ChildItem -Recurse
+#      - name: Release
+#        uses: softprops/action-gh-release@v1
+#        with:
+#          files: ${{ matrix.artifact }}
