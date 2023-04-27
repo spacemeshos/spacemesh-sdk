@@ -1,0 +1,15 @@
+[unstable]
+profile-rustflags = true
+
+[build]
+target = "x86_64-unknown-linux-musl"
+
+[target.x86_64-unknown-linux-musl]
+rustflags = [
+    "--crate-type=staticlib",
+]
+
+[profile.release.package.ed25519_bip32]
+rustflags = [
+    "--crate-type=staticlib",
+]
