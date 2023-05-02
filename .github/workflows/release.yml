@@ -47,7 +47,12 @@ jobs:
       - name: Regenerate C Header and Check
         run: make diff
       - name: Compile
+        if: matrix.name != 'windows-amd64'
         run: cargo build --release --all-features
+      - name: Compile Windows
+        if: matrix.name == 'windows-amd64'
+        # On Windows we only build using the GNU toolchain (not MSVC, the default)
+        run: cargo build --release --all-features --target ${{ matrix.toolchain }}
       - name: Compile staticlib
         if: contains(matrix.toolchain, 'musl')
         # Linux requires a different toolchain for static lib generation
