@@ -73,9 +73,8 @@ jobs:
         run: |
           mkdir artifacts
           Move-Item -Path LICENSE, ed25519_bip32.h -Destination artifacts
-          # lib filename is different on windows for some reason
-          Move-Item -Path target/release/ed25519_bip32.dll -Destination artifacts/libed25519_bip32.dll
-          Move-Item -Path target/release/ed25519_bip32.lib -Destination artifacts/libed25519_bip32.lib
+          Move-Item -Path target/${{ matrix.target }}/release/ed25519_bip32.dll -Destination artifacts
+          Move-Item -Path target/${{ matrix.target }}/release/libed25519_bip32.a -Destination artifacts
           Compress-Archive -Path artifacts/* -Destination ${{ matrix.artifact }}
       - name: Release
         uses: softprops/action-gh-release@v1
