@@ -72,9 +72,10 @@ jobs:
         if: matrix.name == 'windows-amd64'
         run: |
           mkdir artifacts
+          Get-ChildItem -Recurse
           Move-Item -Path LICENSE, ed25519_bip32.h -Destination artifacts
-          Move-Item -Path target/${{ matrix.target }}/release/ed25519_bip32.dll -Destination artifacts
-          Move-Item -Path target/${{ matrix.target }}/release/libed25519_bip32.a -Destination artifacts
+          Move-Item -Path target/${{ matrix.toolchain }}/release/ed25519_bip32.dll -Destination artifacts
+          Move-Item -Path target/${{ matrix.toolchain }}/release/libed25519_bip32.a -Destination artifacts
           Compress-Archive -Path artifacts/* -Destination ${{ matrix.artifact }}
       - name: Release
         uses: softprops/action-gh-release@v1
