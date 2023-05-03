@@ -1,7 +1,7 @@
 use {
     derivation_path::{ChildIndex, DerivationPath as DerivationPathInner},
     solana_remote_wallet::remote_keypair::generate_remote_keypair,
-    solana_remote_wallet::remote_wallet::maybe_wallet_manager,
+    solana_remote_wallet::remote_wallet::{RemoteWalletError, maybe_wallet_manager},
     solana_remote_wallet::locator::Locator,
     solana_sdk::derivation_path::{DerivationPath as SolDerivationPath},
 };
@@ -20,16 +20,7 @@ impl From<DerivationPath> for SolDerivationPath {
     }
 }
 
-// impl AsRef<SolDerivationPath> for DerivationPath {
-//     fn as_ref(&self) -> &SolDerivationPath {
-//         &self.0
-//     }
-// }
-
 impl DerivationPath {
-    // pub fn from_key_str(path: &str) -> Result<Self, DerivationPathError> {
-    //     Self::from_key_str_with_coin(path, Smesh)
-    // }
     fn new<P: Into<Box<[ChildIndex]>>>(path: P) -> Self {
         // We have to jump through hoops here since the SolDerivationPath is not easy to extend,
         // as it has private methods and fields.
@@ -70,7 +61,8 @@ trait Bip44 {
 struct Smesh;
 
 impl Bip44 for Smesh {
-    const COIN: u32 = 540;
+    const COIN: u32 = 501;
+    // const COIN: u32 = 540;
 }
 
 #[cfg(test)]
@@ -78,22 +70,16 @@ mod tests {
     use super::*;
 
     #[test]
-    fn it_works() {
-        // let uri = URIReference::try_from("usb://ledger")?;
+    fn it_works() -> Result<(), RemoteWalletError> {
         let locator = Locator::new_from_path("usb://ledger").unwrap();
         let path = DerivationPath::default();
-        // let mut wm:&Option<Arc<RemoteWalletManager>> = None;
-        // let wm:&Option<Arc<RemoteWalletManager>> = &maybe_wallet_manager().unwrap();
         let wm = &maybe_wallet_manager().unwrap();
-        // let wm:&mut Option<Arc<RemoteWalletManager>> = None;
-        // *wm = maybe_wallet_manager().unwrap();
-        // assert!(generate_remote_keypair(locator, path, wm.unwrap(), false, "main").is_ok())
         if let Some(wm) = wm {
-            // assert!(generate_remote_keypair(locator, SolDerivationPath::from(path), wm, false, "main").is_ok())
-            assert!(generate_remote_keypair(locator, path.into(), wm, false, "main").is_ok())
-        } else {
-            assert!(false)
-            // Err(RemoteWalletError::NoDeviceFound.into())
+            return match generate_remote_keypair(locator, path.into(), wm, false, "main") {
+                Ok(kp) => Ok(()),
+                Err(e) => Err(e),
+            };
         }
+        Err(RemoteWalletError::NoDeviceFound)
     }
 }
