@@ -86,8 +86,9 @@ function getArrayU8FromWasm0(ptr, len) {
     return getUint8Memory0().subarray(ptr / 1, ptr / 1 + len);
 }
 /**
-* derive_key generates keypair from seed and bip32 hierarchical derivation path.
-* it returns 64 bytes. first 32 bytes are secret key, and the second 32 bytes are public key.
+* derive_key generates a keypair from a 64-byte BIP39-compatible seed and BIP32 hierarchical
+* derivation path. it returns 64 bytes. the first 32 bytes are the secret key and the second 32
+* bytes are the public key.
 * @param {Uint8Array} seed
 * @param {string} path
 * @returns {Uint8Array}
