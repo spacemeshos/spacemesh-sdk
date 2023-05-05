@@ -2,12 +2,12 @@
 //!
 //! [BIP-44]: https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki
 //!
-//! Includes definitions and helpers for Solana derivation paths.
-//! The standard Solana BIP-44 derivation path prefix is
+//! Includes definitions and helpers for Spacemesh derivation paths.
+//! The standard Spacemesh BIP-44 derivation path prefix is
 //!
-//! > `m/44'/501'`
+//! > `m/44'/540'`
 //!
-//! with 501 being the Solana coin type.
+//! with 540 being the Spacemesh coin type.
 
 use {
     core::{iter::IntoIterator, slice::Iter},
@@ -67,7 +67,7 @@ impl DerivationPath {
     }
 
     pub fn from_key_str(path: &str) -> Result<Self, DerivationPathError> {
-        Self::from_key_str_with_coin(path, Solana)
+        Self::from_key_str_with_coin(path, Smesh)
     }
 
     fn from_key_str_with_coin<T: Bip44>(path: &str, coin: T) -> Result<Self, DerivationPathError> {
@@ -104,7 +104,7 @@ impl DerivationPath {
     }
 
     pub fn new_bip44(account: Option<u32>, change: Option<u32>) -> Self {
-        Self::new_bip44_with_coin(Solana, account, change)
+        Self::new_bip44_with_coin(Smesh, account, change)
     }
 
     fn new_bip44_with_coin<T: Bip44>(coin: T, account: Option<u32>, change: Option<u32>) -> Self {
@@ -169,7 +169,7 @@ impl DerivationPath {
             let key = query.get(QueryKey::Key.as_ref());
             if let Some(key) = key {
                 // Use from_key_str instead of TryInto here to make it more explicit that this
-                // generates a Solana bip44 DerivationPath
+                // generates a Spacemesh bip44 DerivationPath
                 return Self::from_key_str(key).map(Some);
             }
             if key_only {
@@ -260,10 +260,10 @@ trait Bip44 {
     }
 }
 
-struct Solana;
+struct Smesh;
 
-impl Bip44 for Solana {
-    const COIN: u32 = 501;
+impl Bip44 for Smesh {
+    const COIN: u32 = 540;
 }
 
 #[cfg(test)]
@@ -315,28 +315,28 @@ mod tests {
 
     #[test]
     fn test_from_absolute_path_str() {
-        let s = "m/44/501";
+        let s = "m/44/540";
         assert_eq!(
             DerivationPath::from_absolute_path_str(s).unwrap(),
             DerivationPath::default()
         );
-        let s = "m/44'/501'";
+        let s = "m/44'/540'";
         assert_eq!(
             DerivationPath::from_absolute_path_str(s).unwrap(),
             DerivationPath::default()
         );
-        let s = "m/44'/501'/1/2";
+        let s = "m/44'/540'/1/2";
         assert_eq!(
             DerivationPath::from_absolute_path_str(s).unwrap(),
             DerivationPath::new_bip44(Some(1), Some(2))
         );
-        let s = "m/44'/501'/1'/2'";
+        let s = "m/44'/540'/1'/2'";
         assert_eq!(
             DerivationPath::from_absolute_path_str(s).unwrap(),
             DerivationPath::new_bip44(Some(1), Some(2))
         );
 
-        // Test non-Solana Bip44
+        // Test non-Smesh Bip44
         let s = "m/44'/999'/1/2";
         assert_eq!(
             DerivationPath::from_absolute_path_str(s).unwrap(),
@@ -349,21 +349,21 @@ mod tests {
         );
 
         // Test non-bip44 paths
-        let s = "m/501'/0'/0/0";
+        let s = "m/540'/0'/0/0";
         assert_eq!(
             DerivationPath::from_absolute_path_str(s).unwrap(),
             DerivationPath::new(vec![
-                ChildIndex::Hardened(501),
+                ChildIndex::Hardened(540),
                 ChildIndex::Hardened(0),
                 ChildIndex::Hardened(0),
                 ChildIndex::Hardened(0),
             ])
         );
-        let s = "m/501'/0'/0'/0'";
+        let s = "m/540'/0'/0'/0'";
         assert_eq!(
             DerivationPath::from_absolute_path_str(s).unwrap(),
             DerivationPath::new(vec![
-                ChildIndex::Hardened(501),
+                ChildIndex::Hardened(540),
                 ChildIndex::Hardened(0),
                 ChildIndex::Hardened(0),
                 ChildIndex::Hardened(0),
@@ -760,12 +760,12 @@ mod tests {
     #[test]
     fn test_derivation_path_debug() {
         let path = DerivationPath::default();
-        assert_eq!(format!("{path:?}"), "m/44'/501'".to_string());
+        assert_eq!(format!("{path:?}"), "m/44'/540'".to_string());
 
         let path = DerivationPath::new_bip44(Some(1), None);
-        assert_eq!(format!("{path:?}"), "m/44'/501'/1'".to_string());
+        assert_eq!(format!("{path:?}"), "m/44'/540'/1'".to_string());
 
         let path = DerivationPath::new_bip44(Some(1), Some(2));
-        assert_eq!(format!("{path:?}"), "m/44'/501'/1'/2'".to_string());
+        assert_eq!(format!("{path:?}"), "m/44'/540'/1'/2'".to_string());
     }
 }
