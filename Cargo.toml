@@ -1,5 +1,6 @@
 [workspace]
 members = [
+    "remote-wallet",
     "wallet-test",
 ]
 
@@ -10,3 +11,6 @@ repository = "https://github.com/spacemeshos/spacemesh-sdk"
 homepage = "https://spacemesh.io/"
 license = "MIT"
 edition = "2021"
+
+[workspace.dependencies]
+spacemesh-remote-wallet = { path = "remote-wallet", version = "=0.0.1" }

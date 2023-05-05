@@ -1,14 +1,14 @@
 [package]
 name = "spacemesh-wallet-test"
-description = "Hardware wallet support for Spacemesh applications"
+description = "Hardware wallet tests"
 authors = { workspace = true }
 repository = { workspace = true }
-homepage = "https://spacemesh.io/"
+homepage = { workspace = true }
 license = { workspace = true }
 version = { workspace = true }
 edition = { workspace = true }
 
 [dependencies]
 derivation-path = "0.2.0"
-solana-remote-wallet = "1.15.2"
+spacemesh-remote-wallet = { workspace = true }
 solana-sdk = "1.15.2"

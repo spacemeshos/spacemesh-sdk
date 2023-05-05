@@ -1,7 +1,6 @@
 [package]
-name = "solana-remote-wallet"
-description = "Blockchain, Rebuilt for Scale"
-documentation = "https://docs.rs/solana-remote-wallet"
+name = "spacemesh-remote-wallet"
+description = "Hardware wallet support for Spacemesh applications"
 version = { workspace = true }
 authors = { workspace = true }
 repository = { workspace = true }
@@ -10,18 +9,18 @@ license = { workspace = true }
 edition = { workspace = true }
 
 [dependencies]
-console = { workspace = true }
-dialoguer = { workspace = true }
-hidapi = { workspace = true, optional = true }
-log = { workspace = true }
-num-derive = { workspace = true }
-num-traits = { workspace = true }
-parking_lot = { workspace = true }
-qstring = { workspace = true }
-semver = { workspace = true }
-solana-sdk = { workspace = true }
-thiserror = { workspace = true }
-uriparse = { workspace = true }
+console = "0.15.5"
+dialoguer = "0.10.4"
+hidapi = { version = "2.2.0", default-features = false, optional = true }
+log = "0.4.17"
+num-derive = "0.3"
+num-traits = "0.2"
+parking_lot = "0.12"
+qstring = "0.7.2"
+semver = "1.0.17"
+solana-sdk = "1.15.2"
+thiserror = "1.0.40"
+uriparse = "0.6.4"
 
 [features]
 default = ["linux-static-hidraw", "hidapi"]
@@ -31,7 +30,7 @@ linux-shared-libusb = ["hidapi/linux-shared-libusb"]
 linux-shared-hidraw = ["hidapi/linux-shared-hidraw"]
 
 [[bin]]
-name = "solana-ledger-udev"
+name = "spacemesh-ledger-udev"
 path = "src/bin/ledger-udev.rs"
 
 [package.metadata.docs.rs]

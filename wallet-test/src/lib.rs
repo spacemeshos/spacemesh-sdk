@@ -1,8 +1,8 @@
 use {
     derivation_path::{ChildIndex, DerivationPath as DerivationPathInner},
-    solana_remote_wallet::remote_keypair::generate_remote_keypair,
-    solana_remote_wallet::remote_wallet::{RemoteWalletError, maybe_wallet_manager},
-    solana_remote_wallet::locator::Locator,
+    spacemesh_remote_wallet::remote_keypair::generate_remote_keypair,
+    spacemesh_remote_wallet::remote_wallet::{RemoteWalletError, maybe_wallet_manager},
+    spacemesh_remote_wallet::locator::Locator,
     solana_sdk::derivation_path::{DerivationPath as SolDerivationPath},
 };
 
