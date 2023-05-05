@@ -1,0 +1,16 @@
+[package]
+name = "ed25519-bip32"
+description = "Ed25519 BIP32 bindings for Spacemesh"
+version = { workspace = true }
+authors = { workspace = true }
+repository = { workspace = true }
+homepage = { workspace = true }
+license = { workspace = true }
+edition = { workspace = true }
+
+[lib]
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[dependencies]
+ed25519-dalek-bip32 = "0.2.0"
+wasm-bindgen = "0.2.84"

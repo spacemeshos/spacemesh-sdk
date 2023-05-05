@@ -1,6 +1,7 @@
 [workspace]
 members = [
     "derivation-path",
+    "ed25519-bip32",
     "remote-wallet",
     "wallet-test",
 ]
@@ -15,6 +16,7 @@ edition = "2021"
 
 [workspace.dependencies]
 derivation-path = "0.2.0"
+ed25519-bip32 = { path = "ed25519-bip32", version = "=0.0.1" }
 qstring = "0.7.2"
 solana-sdk = "1.15.2"
 spacemesh-derivation-path = { path = "derivation-path", version = "=0.0.1" }
