@@ -9,10 +9,10 @@ use {
     log::*,
     parking_lot::RwLock,
     solana_sdk::{
-        derivation_path::{DerivationPath, DerivationPathError},
         pubkey::Pubkey,
         signature::{Signature, SignerError},
     },
+    spacemesh_derivation_path::{DerivationPath, DerivationPathError},
     std::{
         sync::Arc,
         time::{Duration, Instant},

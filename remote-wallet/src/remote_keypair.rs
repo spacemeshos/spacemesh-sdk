@@ -8,10 +8,10 @@ use {
         },
     },
     solana_sdk::{
-        derivation_path::DerivationPath,
         pubkey::Pubkey,
         signature::{Signature, Signer, SignerError},
     },
+    spacemesh_derivation_path::DerivationPath,
 };
 
 pub struct RemoteKeypair {

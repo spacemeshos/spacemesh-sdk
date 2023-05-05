@@ -5,7 +5,7 @@ use {
     console::Emoji,
     dialoguer::{theme::ColorfulTheme, Select},
     semver::Version as FirmwareVersion,
-    solana_sdk::derivation_path::DerivationPath,
+    spacemesh_derivation_path::DerivationPath,
     std::{fmt, sync::Arc},
 };
 #[cfg(feature = "hidapi")]

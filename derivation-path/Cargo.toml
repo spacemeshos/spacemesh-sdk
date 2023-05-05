@@ -1,0 +1,15 @@
+[package]
+name = "spacemesh-derivation-path"
+description = "Spacemesh BIP-44 derivation paths"
+authors = { workspace = true }
+repository = { workspace = true }
+homepage = { workspace = true }
+license = { workspace = true }
+version = { workspace = true }
+edition = { workspace = true }
+
+[dependencies]
+derivation-path = { workspace = true }
+qstring = { workspace = true }
+thiserror = { workspace = true }
+uriparse = { workspace = true }

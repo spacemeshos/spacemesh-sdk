@@ -10,5 +10,6 @@ edition = { workspace = true }
 
 [dependencies]
 derivation-path = "0.2.0"
+spacemesh-derivation-path = { workspace = true }
 spacemesh-remote-wallet = { workspace = true }
 solana-sdk = "1.15.2"
