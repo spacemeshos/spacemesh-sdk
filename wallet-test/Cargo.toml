@@ -9,7 +9,7 @@ version = { workspace = true }
 edition = { workspace = true }
 
 [dependencies]
-derivation-path = "0.2.0"
+derivation-path = { workspace = true }
 spacemesh-derivation-path = { workspace = true }
 spacemesh-remote-wallet = { workspace = true }
-solana-sdk = "1.15.2"
+solana-sdk = { workspace = true }

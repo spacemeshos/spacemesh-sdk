@@ -16,6 +16,7 @@ edition = "2021"
 [workspace.dependencies]
 derivation-path = "0.2.0"
 qstring = "0.7.2"
+solana-sdk = "1.15.2"
 spacemesh-derivation-path = { path = "derivation-path", version = "=0.0.1" }
 spacemesh-remote-wallet = { path = "remote-wallet", version = "=0.0.1" }
 thiserror = "1.0.40"

@@ -18,7 +18,7 @@ num-traits = "0.2"
 parking_lot = "0.12"
 qstring = { workspace = true }
 semver = "1.0.17"
-solana-sdk = "1.15.2"
+solana-sdk = { workspace = true }
 spacemesh-derivation-path = { workspace = true }
 thiserror = { workspace = true }
 uriparse = { workspace = true }
