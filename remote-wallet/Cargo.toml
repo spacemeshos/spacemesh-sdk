@@ -16,12 +16,12 @@ log = "0.4.17"
 num-derive = "0.3"
 num-traits = "0.2"
 parking_lot = "0.12"
-qstring = "0.7.2"
+qstring = { workspace = true }
 semver = "1.0.17"
 solana-sdk = "1.15.2"
 spacemesh-derivation-path = { workspace = true }
-thiserror = "1.0.40"
-uriparse = "0.6.4"
+thiserror = { workspace = true }
+uriparse = { workspace = true }
 
 [features]
 default = ["linux-static-hidraw", "hidapi"]
