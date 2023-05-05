@@ -573,7 +573,9 @@ pub fn is_valid_ledger(vendor_id: u16, product_id: u16) -> bool {
 
 /// Build the derivation path byte array from a DerivationPath selection
 fn extend_and_serialize(derivation_path: &DerivationPath) -> Vec<u8> {
-    let byte = if derivation_path.change().is_some() {
+    let byte = if derivation_path.address().is_some() {
+        5
+    } else if derivation_path.change().is_some() {
         4
     } else if derivation_path.account().is_some() {
         3

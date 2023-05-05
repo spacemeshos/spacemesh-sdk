@@ -23,6 +23,7 @@ use {
 
 const ACCOUNT_INDEX: usize = 2;
 const CHANGE_INDEX: usize = 3;
+const ADDRESS_INDEX: usize = 4;
 
 /// Derivation path error.
 #[derive(Error, Debug, Clone, PartialEq, Eq)]
@@ -126,6 +127,10 @@ impl DerivationPath {
         self.0.path().get(CHANGE_INDEX)
     }
 
+    pub fn address(&self) -> Option<&ChildIndex> {
+        self.0.path().get(ADDRESS_INDEX)
+    }
+
     pub fn path(&self) -> &[ChildIndex] {
         self.0.path()
     }
@@ -134,7 +139,11 @@ impl DerivationPath {
     pub fn get_query(&self) -> String {
         if let Some(account) = &self.account() {
             if let Some(change) = &self.change() {
-                format!("?key={account}/{change}")
+                if let Some(address) = &self.address() {
+                    format!("?key={account}/{change}/{address}")
+                } else {
+                    format!("?key={account}/{change}")
+                }
             } else {
                 format!("?key={account}")
             }
