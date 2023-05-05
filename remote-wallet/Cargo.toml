@@ -19,6 +19,7 @@ parking_lot = "0.12"
 qstring = "0.7.2"
 semver = "1.0.17"
 solana-sdk = "1.15.2"
+spacemesh-derivation-path = { workspace = true }
 thiserror = "1.0.40"
 uriparse = "0.6.4"
 
