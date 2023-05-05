@@ -1,0 +1,20 @@
+{
+  "name": "@spacemesh/ed25519-bip32",
+  "description": "WASM-Wrapper for ED25519-DALEK-BIP32 HD key derivation function",
+  "version": "0.1.0",
+  "files": [
+    "gen/bip32_bg.wasm",
+    "gen/bip32.js",
+    "gen/bip32.d.ts"
+  ],
+  "main": "gen/bip32.js",
+  "types": "gen/bip32.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/spacemeshos/ed25519_bip32_wasm.git"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/spacemeshos/ed25519_bip32_wasm/issues"
+  }
+}

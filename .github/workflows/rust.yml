@@ -1,0 +1,25 @@
+# Note: this workflow only runs BASIC tests. It only tests on Linux. In particular it does not
+# test all of the toolchains used in the release process, doesn't test other platforms/architectures,
+# doesn't test the Wasm toolchain, etc.
+name: Rust
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build
+      run: cargo build --verbose
+    - name: Run tests
+      run: cargo test --verbose

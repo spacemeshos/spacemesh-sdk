@@ -16,3 +16,9 @@ Cargo.lock
 # IDEs
 .idea/
 .vscode/
+
+# Dylibs
+*.so
+*.dylib
+*.dll
+
