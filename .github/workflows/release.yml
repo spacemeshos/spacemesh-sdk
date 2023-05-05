@@ -48,16 +48,16 @@ jobs:
         run: make diff
       - name: Compile
         if: matrix.name != 'windows-amd64'
-        run: cargo build --release --all-features
+        run: cargo build --release
       - name: Compile Windows
         if: matrix.name == 'windows-amd64'
         # On Windows we only build using the GNU toolchain (not MSVC, the default)
-        run: cargo build --release --all-features --target ${{ matrix.toolchain }}
+        run: cargo build --release --target ${{ matrix.toolchain }}
       - name: Compile staticlib
         if: contains(matrix.toolchain, 'musl')
         # Linux requires a different toolchain for static lib generation
         run: |
-          cargo build --release --all-features --target ${{ matrix.toolchain }}
+          cargo build --release --target ${{ matrix.toolchain }}
           # overwrite static glibc static lib
           mv target/${{ matrix.toolchain }}/release/libed25519_bip32.a target/release
       - name: Prepare files
