@@ -158,7 +158,7 @@ impl RemoteWalletManager {
     #[cfg(not(feature = "hidapi"))]
     pub fn update_devices(&self) -> Result<usize, RemoteWalletError> {
         Err(RemoteWalletError::Hid(
-            "hidapi crate compilation disabled in solana-remote-wallet.".to_string(),
+            "hidapi crate compilation disabled in remote-wallet.".to_string(),
         ))
     }
 
@@ -219,7 +219,7 @@ pub trait RemoteWallet<T> {
         unimplemented!();
     }
 
-    /// Get solana pubkey from a RemoteWallet
+    /// Get pubkey from a RemoteWallet
     fn get_pubkey(
         &self,
         derivation_path: &DerivationPath,
@@ -275,7 +275,7 @@ pub struct RemoteWalletInfo {
     pub serial: String,
     /// RemoteWallet host device path
     pub host_device_path: String,
-    /// Base pubkey of device at Solana derivation path
+    /// Base pubkey of device at derivation path
     pub pubkey: Pubkey,
     /// Initial read error
     pub error: Option<RemoteWalletError>,
@@ -316,7 +316,7 @@ pub fn initialize_wallet_manager() -> Result<Arc<RemoteWalletManager>, RemoteWal
 #[cfg(not(feature = "hidapi"))]
 pub fn initialize_wallet_manager() -> Result<Arc<RemoteWalletManager>, RemoteWalletError> {
     Err(RemoteWalletError::Hid(
-        "hidapi crate compilation disabled in solana-remote-wallet.".to_string(),
+        "hidapi crate compilation disabled in remote-wallet.".to_string(),
     ))
 }
 
