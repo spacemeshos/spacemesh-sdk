@@ -8,6 +8,9 @@ license = { workspace = true }
 version = { workspace = true }
 edition = { workspace = true }
 
+[lib]
+crate-type = ["staticlib", "cdylib", "rlib"]
+
 [dependencies]
 derivation-path = { workspace = true }
 spacemesh-derivation-path = { workspace = true }
