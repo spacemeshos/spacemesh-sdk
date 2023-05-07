@@ -17,12 +17,8 @@ extern "C" {
 /// this function does the same thing as derive_key, which is bound for wasm rather than CFFI.
 /// it adds error handling in order to be friendlier to the FFI caller: in case of an error, it
 /// prints the error and returns a null pointer.
-/// note that the caller must call derive_free_c() to free the returned memory as ownership is
+/// note that the caller must call sdkutils.free() to free the returned memory as ownership is
 /// transferred to the caller.
 uint8_t *derive_c(const uint8_t *seed, size_t seedlen, const uint8_t *path, size_t pathlen);
-
-/// free the memory allocated and returned by the derive functions by transferring ownership back to
-/// Rust. must be called on each pointer returned by the functions precisely once to ensure safety.
-void derive_free_c(uint8_t *ptr);
 
 } // extern "C"

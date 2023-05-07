@@ -1,6 +1,9 @@
 extern crate ed25519_dalek_bip32;
+// #[macro_use]
+// extern crate spacemesh_sdkutils;
 extern crate wasm_bindgen;
 use ed25519_dalek_bip32::{ed25519_dalek::{Keypair}, DerivationPath, ExtendedSecretKey};
+use spacemesh_sdkutils::{check_err, err};
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
@@ -20,35 +23,13 @@ pub fn derive_key(
     Box::new(keypair.to_bytes())
 }
 
-// check for error. if no error, do nothing. if there is an error, print it and return a null ptr.
-macro_rules! check_err {
-    ($ptr:expr, $str:expr) => {
-        match ($ptr) {
-            Ok(ref _v) => (),
-            Err(e) => {
-                // TODO: return error message rather than printing it
-                eprint!($str);
-                eprintln!(": {e}");
-                return std::ptr::null_mut();
-            },
-        }
-    };
-}
-
-macro_rules! err {
-    ($str:expr) => {
-        eprintln!($str);
-        return std::ptr::null_mut();
-    };
-}
-
 /// derive_c generates a keypair from a 64-byte BIP39-compatible seed and BIP32 hierarchical
 /// derivation path. it returns 64 bytes. the first 32 bytes are the secret key and the second 32
 /// bytes are the public key.
 /// this function does the same thing as derive_key, which is bound for wasm rather than CFFI.
 /// it adds error handling in order to be friendlier to the FFI caller: in case of an error, it
 /// prints the error and returns a null pointer.
-/// note that the caller must call derive_free_c() to free the returned memory as ownership is
+/// note that the caller must call sdkutils.free() to free the returned memory as ownership is
 /// transferred to the caller.
 #[no_mangle]
 pub extern "C" fn derive_c(
@@ -99,13 +80,3 @@ pub extern "C" fn derive_c(
     }
 }
 
-/// free the memory allocated and returned by the derive functions by transferring ownership back to
-/// Rust. must be called on each pointer returned by the functions precisely once to ensure safety.
-#[no_mangle]
-pub extern "C" fn derive_free_c(ptr: *mut u8) {
-    unsafe {
-        if !ptr.is_null() {
-            let _ = Box::from_raw(ptr);
-        }
-    }
-}
