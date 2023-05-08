@@ -1,6 +1,4 @@
 extern crate ed25519_dalek_bip32;
-// #[macro_use]
-// extern crate spacemesh_sdkutils;
 extern crate wasm_bindgen;
 use ed25519_dalek_bip32::{ed25519_dalek::{Keypair}, DerivationPath, ExtendedSecretKey};
 use spacemesh_sdkutils::{check_err, err};
@@ -29,7 +27,7 @@ pub fn derive_key(
 /// this function does the same thing as derive_key, which is bound for wasm rather than CFFI.
 /// it adds error handling in order to be friendlier to the FFI caller: in case of an error, it
 /// prints the error and returns a null pointer.
-/// note that the caller must call sdkutils.free() to free the returned memory as ownership is
+/// note that the caller must call sdkutils.freeptr() to free the returned memory as ownership is
 /// transferred to the caller.
 #[no_mangle]
 pub extern "C" fn derive_c(

@@ -1,7 +1,5 @@
 #![allow(clippy::integer_arithmetic)]
 #![allow(dead_code)]
-// #[macro_use]
-// extern crate spacemesh_sdkutils;
 
 pub mod ledger;
 pub mod ledger_error;
@@ -16,15 +14,17 @@ use {
 };
 
 /// read_pubkey_from_ledger reads a pubkey from the ledger device specified by path and
-/// derivation_path. If path is empty, the first ledger device found will be used. It returns
+/// derivation_path. If path is empty, the first ledger device found will be used. If confirm_key
+/// is true, it will prompt the user to confirm the key on the device. It returns
 /// a pointer to the pubkey bytes on success, or null on failure. Note that the caller must free
-/// the returned pointer by passing it back to Rust using, e.g., derive_free_c().
+/// the returned pointer by passing it back to Rust using sdkutils.freeptr().
 #[no_mangle]
 pub extern "C" fn read_pubkey_from_ledger(
     path: *const u8,
     pathlen: usize,
     derivation_path: *const u8,
     derivation_pathlen: usize,
+    confirm_key: bool,
 ) -> *mut u8 {
     unsafe {
         // first handle the device path
@@ -59,7 +59,7 @@ pub extern "C" fn read_pubkey_from_ledger(
         let wm = wm.unwrap();
         check_none!(wm, "failed to get wallet manager");
         let wm = wm.unwrap();
-        let result = remote_keypair::generate_remote_keypair(locator, derivation_path, wm.deref(), false, "main");
+        let result = remote_keypair::generate_remote_keypair(locator, derivation_path, wm.deref(), confirm_key, "main");
         check_err!(result, "failed to generate remote keypair");
         let kp = result.unwrap();
         println!("uri: {}, path: {:?}, pubkey: {}", kp.path, kp.derivation_path, kp.pubkey);
