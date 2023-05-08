@@ -37,6 +37,10 @@ jobs:
         with:
           toolchain: stable
           target: ${{ matrix.toolchain }}
+      - name: Install libudev
+        # libudev is required for the hidapi crate
+        if: matrix.name == 'linux-amd64'
+        run: sudo apt-get install -y libudev-dev
       - name: Regenerate C Header and Check
         run: make diff
       - name: Compile
