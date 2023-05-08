@@ -30,5 +30,4 @@ diff: cheader
 
 .PHONY: clean
 clean:
-	rm -rf ./ed25519-bip32/lib/gen
 	rm -rf ./target
