@@ -50,6 +50,7 @@ jobs:
       - name: Compile Windows
         if: matrix.name == 'windows-amd64'
         # On Windows we only build using the GNU toolchain (not MSVC, the default)
+        shell: bash
         run: |
           cargo build --release --target ${{ matrix.toolchain }}
           mv target/${{ matrix.toolchain }}/release/*.dll target/release
