@@ -62,7 +62,7 @@ jobs:
         run: |
           mkdir artifacts
           # copy all relevant headers and static and dynamic libs into the new directory
-          find . -maxdepth 3 -type f \( -path './LICENSE' -o -path '*.h' -o -path './target/release/*.a' -o -path './target/release/*.dll' -o -path './target/release/*.dylib' -o -path './target/release/*.so' \) -exec mv -t artifacts {} +
+          find . -maxdepth 3 -type f \( -path './LICENSE' -o -path '*.h' -o -path './target/release/*.a' -o -path './target/release/*.dll' -o -path './target/release/*.dylib' -o -path './target/release/*.so' \) -print0 | xargs -0 -I {} mv {} artifacts
           cd artifacts
           tar -czf ${{ env.ARTIFACT_NAME }}_${{ matrix.name }}.tar.gz *
           mv ${{ env.ARTIFACT_NAME }}_${{ matrix.name }}.tar.gz ..
