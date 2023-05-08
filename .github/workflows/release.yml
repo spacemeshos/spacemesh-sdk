@@ -39,8 +39,9 @@ jobs:
           target: ${{ matrix.toolchain }}
       - name: Install required packages
         # libudev and pkgconfig are required for the hidapi crate
+        # musl-gcc is needed for static compilation
         if: matrix.name == 'linux-amd64'
-        run: sudo apt-get install -y libudev-dev pkg-config
+        run: sudo apt-get install -y libudev-dev pkg-config musl-tools
       - name: Regenerate C Header and Check
         run: make diff
       - name: Compile
