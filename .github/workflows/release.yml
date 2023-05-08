@@ -37,7 +37,7 @@ jobs:
         with:
           toolchain: stable
           target: ${{ matrix.toolchain }}
-      - name: Install libudev
+      - name: Install required packages
         # libudev and pkgconfig are required for the hidapi crate
         if: matrix.name == 'linux-amd64'
         run: sudo apt-get install -y libudev-dev pkg-config
@@ -50,14 +50,22 @@ jobs:
         if: matrix.name == 'windows-amd64'
         # On Windows we only build using the GNU toolchain (not MSVC, the default)
         run: cargo build --release --target ${{ matrix.toolchain }}
+#      - name: Set env
+#        if: contains(matrix.toolchain, 'musl')
+#        run: |
+#          echo "PKG_CONFIG_ALLOW_CROSS=1" >> $GITHUB_ENV
+#          echo "C_INCLUDE_PATH=${{ github.workspace }}/kernel-headers/x86/include:$(C_INCLUDE_PATH)" >> $GITHUB_ENV
       - name: Compile staticlib
         if: contains(matrix.toolchain, 'musl')
+#        env:
+#          PKG_CONFIG_ALLOW_CROSS: 1
+#          C_INCLUDE_PATH: ${{ github.workspace }}/kernel-headers/x86/include
         # Linux requires a different toolchain for static lib generation
         run: |
+          export PKG_CONFIG_ALLOW_CROSS=1
+          export C_INCLUDE_PATH=$C_INCLUDE_PATH:${{ github.workspace }}/kernel-headers/x86/include
           # some subcrates require a different set of headers
           git clone https://github.com/sabotage-linux/kernel-headers.git kernel-headers
-          export PKG_CONFIG_ALLOW_CROSS=1
-          export C_INCLUDE_PATH=${{ github.workspace }}/kernel-headers/x86/include:$(C_INCLUDE_PATH)
           cargo build --release --target ${{ matrix.toolchain }}
           # overwrite static glibc static lib
           mv target/${{ matrix.toolchain }}/release/lib*.a target/release
