@@ -52,7 +52,6 @@ jobs:
         # On Windows we only build using the GNU toolchain (not MSVC, the default)
         run: |
           cargo build --release --target ${{ matrix.toolchain }}
-          mkdir -p target/release
           mv target/${{ matrix.toolchain }}/release/*.dll target/release
           mv target/${{ matrix.toolchain }}/release/*.a target/release
           ls -laR
