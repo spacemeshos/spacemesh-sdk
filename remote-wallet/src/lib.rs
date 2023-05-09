@@ -8,16 +8,18 @@ pub mod remote_keypair;
 pub mod remote_wallet;
 
 use std::ops::Deref;
+use std::slice;
 use {
     spacemesh_derivation_path::DerivationPath,
     spacemesh_sdkutils::{check_err, check_none},
+    solana_sdk::pubkey::PUBKEY_BYTES,
 };
 
 /// read_pubkey_from_ledger reads a pubkey from the ledger device specified by path and
 /// derivation_path. If path is empty, the first ledger device found will be used. If confirm_key
-/// is true, it will prompt the user to confirm the key on the device. It returns
-/// a pointer to the pubkey bytes on success, or null on failure. Note that the caller must free
-/// the returned pointer by passing it back to Rust using sdkutils.freeptr().
+/// is true, it will prompt the user to confirm the key on the device. It writes the pubkey bytes
+/// to result, which must be at least 32 bytes long. It returns a status code, with a return value
+/// of zero indicating success.
 #[no_mangle]
 pub extern "C" fn read_pubkey_from_ledger(
     path: *const u8,
@@ -25,7 +27,8 @@ pub extern "C" fn read_pubkey_from_ledger(
     derivation_path: *const u8,
     derivation_pathlen: usize,
     confirm_key: bool,
-) -> *mut u8 {
+    result: *mut u8,
+) -> u16 {
     unsafe {
         // first handle the device path
         let path = std::slice::from_raw_parts(path, pathlen);
@@ -59,12 +62,13 @@ pub extern "C" fn read_pubkey_from_ledger(
         let wm = wm.unwrap();
         check_none!(wm, "failed to get wallet manager");
         let wm = wm.unwrap();
-        let result = remote_keypair::generate_remote_keypair(locator, derivation_path, wm.deref(), confirm_key, "main");
-        check_err!(result, "failed to generate remote keypair");
-        let kp = result.unwrap();
+        let keypair = remote_keypair::generate_remote_keypair(locator, derivation_path, wm.deref(), confirm_key, "main");
+        check_err!(keypair, "failed to generate remote keypair");
+        let kp = keypair.unwrap();
         println!("uri: {}, path: {:?}, pubkey: {}", kp.path, kp.derivation_path, kp.pubkey);
-        let boxed_pubkey = Box::new(kp.pubkey.to_bytes().to_vec());
-        Box::into_raw(boxed_pubkey) as *mut u8
+        let result_slice = slice::from_raw_parts_mut(result, PUBKEY_BYTES);
+        result_slice.copy_from_slice(&kp.pubkey.to_bytes());
+        0
     }
 }
 

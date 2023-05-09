@@ -27,13 +27,14 @@ extern "C" {
 
 /// read_pubkey_from_ledger reads a pubkey from the ledger device specified by path and
 /// derivation_path. If path is empty, the first ledger device found will be used. If confirm_key
-/// is true, it will prompt the user to confirm the key on the device. It returns
-/// a pointer to the pubkey bytes on success, or null on failure. Note that the caller must free
-/// the returned pointer by passing it back to Rust using sdkutils.freeptr().
-uint8_t *read_pubkey_from_ledger(const uint8_t *path,
+/// is true, it will prompt the user to confirm the key on the device. It writes the pubkey bytes
+/// to result, which must be at least 32 bytes long. It returns a status code, with a return value
+/// of zero indicating success.
+uint16_t read_pubkey_from_ledger(const uint8_t *path,
                                  size_t pathlen,
                                  const uint8_t *derivation_path,
                                  size_t derivation_pathlen,
-                                 bool confirm_key);
+                                 bool confirm_key,
+                                 uint8_t *result);
 
 } // extern "C"

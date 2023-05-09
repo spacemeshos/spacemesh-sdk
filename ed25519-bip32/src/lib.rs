@@ -1,6 +1,8 @@
 extern crate ed25519_dalek_bip32;
 extern crate wasm_bindgen;
-use ed25519_dalek_bip32::{ed25519_dalek::{Keypair}, DerivationPath, ExtendedSecretKey};
+
+use std::slice;
+use ed25519_dalek_bip32::{ed25519_dalek::{Keypair, KEYPAIR_LENGTH}, DerivationPath, ExtendedSecretKey};
 use spacemesh_sdkutils::{check_err, err};
 use wasm_bindgen::prelude::*;
 
@@ -22,20 +24,19 @@ pub fn derive_key(
 }
 
 /// derive_c generates a keypair from a 64-byte BIP39-compatible seed and BIP32 hierarchical
-/// derivation path. it returns 64 bytes. the first 32 bytes are the secret key and the second 32
-/// bytes are the public key.
-/// this function does the same thing as derive_key, which is bound for wasm rather than CFFI.
+/// derivation path. It writes the keypair bytes to result, which must be at least 64 bytes long.
+/// It returns a status code, with a return value of zero indicating success.
+/// This function does the same thing as derive_key, which is bound for wasm rather than CFFI.
 /// it adds error handling in order to be friendlier to the FFI caller: in case of an error, it
-/// prints the error and returns a null pointer.
-/// note that the caller must call sdkutils.freeptr() to free the returned memory as ownership is
-/// transferred to the caller.
+/// prints the error and returns a nonzero value.
 #[no_mangle]
 pub extern "C" fn derive_c(
     seed: *const u8,
     seedlen: usize,
     path: *const u8,
     pathlen: usize,
-) -> *mut u8 {
+    result: *mut u8,
+) -> u16 {
     unsafe {
         let seed_slice = std::slice::from_raw_parts(seed, seedlen);
         let path_str = std::str::from_utf8(std::slice::from_raw_parts(path, pathlen));
@@ -73,8 +74,8 @@ pub extern "C" fn derive_c(
         let extended_inner = extended.unwrap();
         let extended_public_key = extended_inner.public_key();
         let keypair = Keypair{secret: extended_inner.secret_key, public: extended_public_key};
-        let boxed_keypair = Box::new(keypair.to_bytes());
-        Box::into_raw(boxed_keypair) as *mut u8
+        let result_slice = slice::from_raw_parts_mut(result, KEYPAIR_LENGTH);
+        result_slice.copy_from_slice(&keypair.to_bytes());
+        0
     }
 }
-
