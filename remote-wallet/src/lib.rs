@@ -74,6 +74,8 @@ mod tests {
     use super::*;
 
     #[test]
+    // don't run by default since it requires a physically connected ledger device
+    #[ignore]
     fn it_works() -> Result<(), remote_wallet::RemoteWalletError> {
         let locator = locator::Locator::new_from_path("usb://ledger").unwrap();
         let s = "m/44'/540'/0'/0'/0'";
