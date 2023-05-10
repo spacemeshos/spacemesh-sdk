@@ -1,8 +1,8 @@
 name: Build and Release
 
-on:
-  release:
-    types: [created]
+on: push
+#  release:
+#    types: [created]
 
 env:
   ARTIFACT_NAME: spacemesh-sdk
@@ -17,7 +17,7 @@ jobs:
             toolchain: x86_64-apple-darwin
           - image: ubuntu-latest
             name: linux-amd64
-            toolchain: x86_64-unknown-linux-musl
+            toolchain: x86_64-unknown-linux-gnu
           - image: windows-latest
             name: windows-amd64
             toolchain: x86_64-pc-windows-gnu
@@ -26,7 +26,7 @@ jobs:
             toolchain: aarch64-apple-darwin
           - image: [self-hosted, linux, arm64]
             name: linux-arm64
-            toolchain: aarch64-unknown-linux-musl
+            toolchain: aarch64-unknown-linux-gnu
     runs-on: ${{ matrix.image }}
     name: Release ${{ matrix.name }}
     steps:
@@ -39,9 +39,8 @@ jobs:
           target: ${{ matrix.toolchain }}
       - name: Install required packages
         # libudev and pkgconfig are required for the hidapi crate
-        # musl-gcc is needed for static compilation
         if: matrix.name == 'linux-amd64'
-        run: sudo apt-get install -y libudev-dev pkg-config musl-tools
+        run: sudo apt-get install -y libudev-dev pkg-config
       - name: Regenerate C Header and Check
         run: make diff
       - name: Compile
@@ -55,17 +54,6 @@ jobs:
           cargo build --release --target ${{ matrix.toolchain }}
           mv target/${{ matrix.toolchain }}/release/*.dll target/release
           mv target/${{ matrix.toolchain }}/release/*.a target/release
-      - name: Compile staticlib
-        if: contains(matrix.toolchain, 'musl')
-        # Linux requires a different toolchain for static lib generation
-        run: |
-          export PKG_CONFIG_ALLOW_CROSS=1
-          export C_INCLUDE_PATH=${{ github.workspace }}/kernel-headers/x86/include:/usr/include
-          # some subcrates require a different set of headers
-          git clone https://github.com/sabotage-linux/kernel-headers.git kernel-headers
-          cargo build --release --target ${{ matrix.toolchain }}
-          # overwrite glibc static lib
-          mv target/${{ matrix.toolchain }}/release/lib*.a target/release
       - name: Prepare files
         shell: bash
         run: |
@@ -79,3 +67,4 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: ${{ env.ARTIFACT_NAME }}_${{ matrix.name }}.tar.gz
+          tag_name: v0.0.1
