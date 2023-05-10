@@ -28,9 +28,7 @@
  * to result, which must be at least 32 bytes long. It returns a status code, with a return value
  * of zero indicating success.
  */
-uint16_t read_pubkey_from_ledger(const uint8_t *path,
-                                 size_t pathlen,
-                                 const uint8_t *derivation_path,
-                                 size_t derivation_pathlen,
+uint16_t read_pubkey_from_ledger(const char *path_ptr,
+                                 const char *derivation_path_ptr,
                                  bool confirm_key,
                                  uint8_t *result);
