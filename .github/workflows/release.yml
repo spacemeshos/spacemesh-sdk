@@ -1,8 +1,8 @@
 name: Build and Release
 
-on:
-  release:
-    types: [created]
+on: push
+#  release:
+#    types: [created]
 
 env:
   ARTIFACT_NAME: spacemesh-sdk
@@ -79,3 +79,4 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: ${{ env.ARTIFACT_NAME }}_${{ matrix.name }}.tar.gz
+          tag_name: v0.0.1
