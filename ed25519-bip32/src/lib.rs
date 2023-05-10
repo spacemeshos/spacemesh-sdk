@@ -1,8 +1,8 @@
 extern crate ed25519_dalek_bip32;
 extern crate wasm_bindgen;
 
-use std::slice;
-use ed25519_dalek_bip32::{ed25519_dalek::{Keypair, KEYPAIR_LENGTH}, DerivationPath, ExtendedSecretKey};
+use std::ffi::{c_char, CStr};
+use ed25519_dalek_bip32::{ed25519_dalek::{Keypair, KEYPAIR_LENGTH, SECRET_KEY_LENGTH}, DerivationPath, ExtendedSecretKey};
 use spacemesh_sdkutils::{check_err, err};
 use wasm_bindgen::prelude::*;
 
@@ -31,51 +31,53 @@ pub fn derive_key(
 /// prints the error and returns a nonzero value.
 #[no_mangle]
 pub extern "C" fn derive_c(
-    seed: *const u8,
+    seed_ptr: *const u8,
     seedlen: usize,
-    path: *const u8,
-    pathlen: usize,
+    derivation_path_ptr: *const c_char,
     result: *mut u8,
 ) -> u16 {
-    unsafe {
-        let seed_slice = std::slice::from_raw_parts(seed, seedlen);
-        let path_str = std::str::from_utf8(std::slice::from_raw_parts(path, pathlen));
-        check_err!(path_str, "failed to convert string from raw parts");
-        let derivation_path = path_str.unwrap().parse();
-        check_err!(derivation_path, "failed to parse derivation path");
-        let derivation_path_inner: DerivationPath = derivation_path.unwrap();
-
-        // for now we are rather strict with which types of paths we accept, to avoid errors and to
-        // be as compatible as possible with BIP-44. the path must be of the format
-        // "m/44'/540'/...", i.e., it must have purpose 44 and coin type
-        // 540 and all path elements must be hardened. we expect it to contain between 2 and 5
-        // elements.
-        if derivation_path_inner.path().len() < 2 {
-            err!("path too short");
-        }
-        if derivation_path_inner.path().len() > 5 {
-            err!("path too long");
-        }
-        if derivation_path_inner.path()[0].to_u32() != 44 {
-            err!("bad path purpose");
-        }
-        if derivation_path_inner.path()[1].to_u32() != 540 {
-            err!("bad path coin type");
-        }
-        for p in derivation_path_inner.path() {
-            if !p.is_hardened() {
-                err!("path isn't fully hardened");
-            }
-        }
-
-        let extended = ExtendedSecretKey::from_seed(seed_slice)
-            .and_then(|extended| extended.derive(&derivation_path_inner));
-        check_err!(extended, "failed to derive secret key from seed");
-        let extended_inner = extended.unwrap();
-        let extended_public_key = extended_inner.public_key();
-        let keypair = Keypair{secret: extended_inner.secret_key, public: extended_public_key};
-        let result_slice = slice::from_raw_parts_mut(result, KEYPAIR_LENGTH);
-        result_slice.copy_from_slice(&keypair.to_bytes());
-        0
+    // Seed must be at least 32 bytes
+    if seedlen < SECRET_KEY_LENGTH {
+        err!("seed must be at least 32 bytes");
     }
+    let seed_slice = unsafe { std::slice::from_raw_parts(seed_ptr, seedlen) };
+    let derivation_path_str = unsafe { CStr::from_ptr(derivation_path_ptr) };
+    let derivation_path_str = derivation_path_str.to_str();
+    check_err!(derivation_path_str, "failed to convert path string from raw parts");
+    let derivation_path_str = derivation_path_str.unwrap().parse();
+    check_err!(derivation_path_str, "failed to parse derivation path");
+    let derivation_path: DerivationPath = derivation_path_str.unwrap();
+
+    // for now we are rather strict with which types of paths we accept, to avoid errors and to
+    // be as compatible as possible with BIP-44. the path must be of the format
+    // "m/44'/540'/...", i.e., it must have purpose 44 and coin type
+    // 540 and all path elements must be hardened. we expect it to contain between 2 and 5
+    // elements.
+    if derivation_path.path().len() < 2 {
+        err!("path too short");
+    }
+    if derivation_path.path().len() > 5 {
+        err!("path too long");
+    }
+    if derivation_path.path()[0].to_u32() != 44 {
+        err!("bad path purpose");
+    }
+    if derivation_path.path()[1].to_u32() != 540 {
+        err!("bad path coin type");
+    }
+    for p in derivation_path.path() {
+        if !p.is_hardened() {
+            err!("path isn't fully hardened");
+        }
+    }
+
+    let extended = ExtendedSecretKey::from_seed(seed_slice)
+        .and_then(|extended| extended.derive(&derivation_path));
+    check_err!(extended, "failed to derive secret key from seed");
+    let extended_inner = extended.unwrap();
+    let extended_public_key = extended_inner.public_key();
+    let keypair = Keypair{secret: extended_inner.secret_key, public: extended_public_key};
+    let result_slice = unsafe { std::slice::from_raw_parts_mut(result, KEYPAIR_LENGTH) };
+    result_slice.copy_from_slice(&keypair.to_bytes());
+    0
 }
