@@ -23,3 +23,9 @@ spacemesh-derivation-path = { path = "derivation-path", version = "=0.0.1" }
 spacemesh-remote-wallet = { path = "remote-wallet", version = "=0.0.1" }
 thiserror = "1.0.40"
 uriparse = "0.6.4"
+
+[profile.release-clib]
+inherits = "release"
+strip = true
+lto = true
+rpath = true
