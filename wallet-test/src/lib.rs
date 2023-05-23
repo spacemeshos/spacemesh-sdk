@@ -1,14 +1,13 @@
-use {
-    spacemesh_remote_wallet::remote_keypair::generate_remote_keypair,
-    spacemesh_remote_wallet::remote_wallet::{RemoteWalletError, maybe_wallet_manager},
-    spacemesh_remote_wallet::locator::Locator,
-    spacemesh_derivation_path::DerivationPath,
-};
-
 #[cfg(test)]
 mod tests {
 
     use super::*;
+    use {
+        spacemesh_remote_wallet::remote_keypair::generate_remote_keypair,
+        spacemesh_remote_wallet::remote_wallet::{RemoteWalletError, maybe_wallet_manager},
+        spacemesh_remote_wallet::locator::Locator,
+        spacemesh_derivation_path::DerivationPath,
+    };
 
     #[test]
     fn it_works() -> Result<(), RemoteWalletError> {
