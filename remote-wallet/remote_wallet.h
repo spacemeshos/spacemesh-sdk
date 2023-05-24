@@ -19,8 +19,6 @@
 
 #define SIGN_MESSAGE 6
 
-#define SIGN_OFFCHAIN_MESSAGE 7
-
 /**
  * read_pubkey_from_ledger reads a pubkey from the ledger device specified by path and
  * derivation_path. If path is empty, the first ledger device found will be used. If confirm_key
