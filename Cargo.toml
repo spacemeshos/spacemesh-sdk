@@ -3,7 +3,6 @@ members = [
     "derivation-path",
     "ed25519-bip32",
     "remote-wallet",
-    "sdkutils",
 ]
 
 [workspace.package]
@@ -21,6 +20,5 @@ qstring = "0.7.2"
 solana-sdk = "=1.14.17"
 spacemesh-derivation-path = { path = "derivation-path", version = "=0.0.1" }
 spacemesh-remote-wallet = { path = "remote-wallet", version = "=0.0.1" }
-spacemesh-sdkutils = { path = "sdkutils", version = "=0.0.1" }
 thiserror = "1.0.40"
 uriparse = "0.6.4"
