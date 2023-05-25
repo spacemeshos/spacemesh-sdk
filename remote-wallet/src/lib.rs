@@ -45,6 +45,9 @@ fn _read_pubkey_from_ledger(
     confirm_key: bool,
 ) -> Result<Pubkey, Box<dyn std::error::Error>> {
     // first handle the device path
+    // note: it might seem to make more sense to do all the unsafe operations in the parent
+    // function and leave only the "business logic" here, but doing it here allows us to handle
+    // all errors at the higher level and pass them back across FFI.
     let path_str = unsafe { CStr::from_ptr(path_ptr) };
     let path_str = path_str
         .to_str()
