@@ -11,8 +11,7 @@ use std::ffi::{c_char, CStr};
 use std::ops::Deref;
 use {
     spacemesh_derivation_path::DerivationPath,
-    spacemesh_sdkutils::{check_err, check_none},
-    solana_sdk::pubkey::PUBKEY_BYTES,
+    solana_sdk::pubkey::{Pubkey, PUBKEY_BYTES},
 };
 
 /// read_pubkey_from_ledger reads a pubkey from the ledger device specified by path and
@@ -91,7 +90,7 @@ fn _read_pubkey_from_ledger(
 
 #[cfg(test)]
 mod tests {
-
+    #[cfg(feature = "test-hw-ledger")]
     use super::*;
 
     #[test]
