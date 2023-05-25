@@ -15,7 +15,7 @@
  * it adds error handling in order to be friendlier to the FFI caller: in case of an error, it
  * prints the error and returns a nonzero value.
  */
-uint16_t derive_c(const uint8_t *seed_ptr,
+uint16_t derive_c(const uint8_t *seed,
                   size_t seedlen,
                   const char *derivation_path_ptr,
                   uint8_t *result);
