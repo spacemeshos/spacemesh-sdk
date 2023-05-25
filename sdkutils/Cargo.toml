@@ -1,0 +1,11 @@
+[package]
+name = "spacemesh-sdkutils"
+description = "Misc utils used throughout the Spacemesh SDK"
+authors = { workspace = true }
+repository = { workspace = true }
+homepage = { workspace = true }
+license = { workspace = true }
+version = { workspace = true }
+edition = { workspace = true }
+
+[dependencies]
