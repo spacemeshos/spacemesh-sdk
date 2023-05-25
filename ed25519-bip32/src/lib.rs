@@ -31,7 +31,7 @@ pub fn derive_key(
 /// prints the error and returns a nonzero value.
 #[no_mangle]
 pub extern "C" fn derive_c(
-    seed_ptr: *const u8,
+    seed: *const u8,
     seedlen: usize,
     derivation_path_ptr: *const c_char,
     result: *mut u8,
@@ -40,7 +40,7 @@ pub extern "C" fn derive_c(
     if seedlen < SECRET_KEY_LENGTH {
         err!("seed must be at least 32 bytes");
     }
-    let seed_slice = unsafe { std::slice::from_raw_parts(seed_ptr, seedlen) };
+    let seed_slice = unsafe { std::slice::from_raw_parts(seed, seedlen) };
     let derivation_path_str = unsafe { CStr::from_ptr(derivation_path_ptr) };
     let derivation_path_str = derivation_path_str.to_str();
     check_err!(derivation_path_str, "failed to convert path string from raw parts");

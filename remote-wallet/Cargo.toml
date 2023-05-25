@@ -34,6 +34,7 @@ linux-static-libusb = ["hidapi/linux-static-libusb"]
 linux-static-hidraw = ["hidapi/linux-static-hidraw"]
 linux-shared-libusb = ["hidapi/linux-shared-libusb"]
 linux-shared-hidraw = ["hidapi/linux-shared-hidraw"]
+test-hw-ledger = []
 
 [package.metadata.docs.rs]
 targets = ["x86_64-unknown-linux-gnu"]
