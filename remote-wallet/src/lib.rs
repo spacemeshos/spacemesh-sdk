@@ -21,12 +21,12 @@ use {
 /// of zero indicating success.
 #[no_mangle]
 pub extern "C" fn read_pubkey_from_ledger(
-    path_ptr: *const c_char,
+    path: *const c_char,
     derivation_path_ptr: *const c_char,
     confirm_key: bool,
     result: *mut u8,
 ) -> u16 {
-    match _read_pubkey_from_ledger(path_ptr, derivation_path_ptr, confirm_key) {
+    match _read_pubkey_from_ledger(path, derivation_path_ptr, confirm_key) {
         Ok(pubkey) => {
             let result_slice = unsafe { std::slice::from_raw_parts_mut(result, PUBKEY_BYTES) };
             result_slice.copy_from_slice(pubkey.as_ref());
@@ -40,7 +40,7 @@ pub extern "C" fn read_pubkey_from_ledger(
 }
 
 fn _read_pubkey_from_ledger(
-    path_ptr: *const c_char,
+    path: *const c_char,
     derivation_path_ptr: *const c_char,
     confirm_key: bool,
 ) -> Result<Pubkey, Box<dyn std::error::Error>> {
@@ -48,7 +48,7 @@ fn _read_pubkey_from_ledger(
     // note: it might seem to make more sense to do all the unsafe operations in the parent
     // function and leave only the "business logic" here, but doing it here allows us to handle
     // all errors at the higher level and pass them back across FFI.
-    let path_str = unsafe { CStr::from_ptr(path_ptr) };
+    let path_str = unsafe { CStr::from_ptr(path) };
     let path_str = path_str
         .to_str()
         .map_err(|e| format!("converting path string: {e}"))?;
