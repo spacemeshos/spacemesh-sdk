@@ -8,8 +8,12 @@ homepage = { workspace = true }
 license = { workspace = true }
 edition = { workspace = true }
 
+[lib]
+crate-type = ["staticlib", "cdylib", "rlib"]
+
 [dependencies]
 console = "0.15.5"
+derivation-path = { workspace = true }
 dialoguer = "0.10.4"
 hidapi = { version = "2.2.0", default-features = false, optional = true }
 log = "0.4.17"
@@ -29,10 +33,7 @@ linux-static-libusb = ["hidapi/linux-static-libusb"]
 linux-static-hidraw = ["hidapi/linux-static-hidraw"]
 linux-shared-libusb = ["hidapi/linux-shared-libusb"]
 linux-shared-hidraw = ["hidapi/linux-shared-hidraw"]
-
-[[bin]]
-name = "spacemesh-ledger-udev"
-path = "src/bin/ledger-udev.rs"
+test-hw-ledger = []
 
 [package.metadata.docs.rs]
 targets = ["x86_64-unknown-linux-gnu"]

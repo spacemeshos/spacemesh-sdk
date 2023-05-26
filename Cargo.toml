@@ -3,7 +3,6 @@ members = [
     "derivation-path",
     "ed25519-bip32",
     "remote-wallet",
-    "wallet-test",
 ]
 
 [workspace.package]
