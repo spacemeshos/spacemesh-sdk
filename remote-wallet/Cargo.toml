@@ -24,7 +24,6 @@ qstring = { workspace = true }
 semver = "1.0.17"
 solana-sdk = { workspace = true }
 spacemesh-derivation-path = { workspace = true }
-spacemesh-sdkutils = { workspace = true }
 thiserror = { workspace = true }
 uriparse = { workspace = true }
 
