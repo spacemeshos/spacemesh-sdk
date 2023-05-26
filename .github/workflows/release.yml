@@ -50,7 +50,7 @@ jobs:
         run: |
           mkdir artifacts
           # copy all relevant headers and static and dynamic libs into the new directory
-          find . -maxdepth 3 -type f \( \
+          find . -maxdepth 4 -type f \( \
             -path './LICENSE' -o \
             -path '*.h' -o \
             -path './target/${{ matrix.target }}/release/*.a' -o \
