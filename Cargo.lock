@@ -439,7 +439,6 @@ name = "ed25519-bip32"
 version = "0.0.1"
 dependencies = [
  "ed25519-dalek-bip32",
- "spacemesh-sdkutils",
  "wasm-bindgen",
 ]
 
@@ -617,9 +616,9 @@ checksum = "fed44880c466736ef9a5c5b5facefb5ed0785676d0c02d612db14e54f0d84286"
 
 [[package]]
 name = "hidapi"
-version = "2.2.2"
+version = "2.3.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7461dc5aae7f2f360289bae7d169690e51c182d4b5a56adeb8c7f312965f0411"
+checksum = "1f841dbb77615e116fb2ca38044b42310370f0d093c774a72361670ff2ae431b"
 dependencies = [
  "cc",
  "libc",
@@ -1473,14 +1472,9 @@ dependencies = [
  "semver",
  "solana-sdk",
  "spacemesh-derivation-path",
- "spacemesh-sdkutils",
  "thiserror",
  "uriparse",
 ]
-
-[[package]]
-name = "spacemesh-sdkutils"
-version = "0.0.1"
 
 [[package]]
 name = "subtle"
