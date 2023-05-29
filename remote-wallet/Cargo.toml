@@ -12,7 +12,7 @@ edition = { workspace = true }
 crate-type = ["staticlib", "cdylib", "rlib"]
 
 [dependencies]
-console = "0.15.5"
+console = "0.15.7"
 derivation-path = { workspace = true }
 dialoguer = "0.10.4"
 hidapi = { version = "2.3.3", default-features = false, optional = true }
