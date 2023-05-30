@@ -1,6 +1,7 @@
 name: Build and Release
 
 on:
+  workflow_dispatch:
   release:
     types: [created]
 
@@ -44,7 +45,7 @@ jobs:
       - name: Regenerate C Header and Check
         run: make diff
       - name: Compile
-        run: cargo build --release --target ${{ matrix.target }}
+        run: cargo build --target ${{ matrix.target }} --profile release-clib
       - name: Prepare files
         shell: bash
         run: |
@@ -53,10 +54,10 @@ jobs:
           find . -maxdepth 4 -type f \( \
             -path './LICENSE' -o \
             -path '*.h' -o \
-            -path './target/${{ matrix.target }}/release/*.a' -o \
-            -path './target/${{ matrix.target }}/release/*.dll' -o \
-            -path './target/${{ matrix.target }}/release/*.dylib' -o \
-            -path './target/${{ matrix.target }}/release/*.so' \
+            -path './target/${{ matrix.target }}/release-clib/*.a' -o \
+            -path './target/${{ matrix.target }}/release-clib/*.dll' -o \
+            -path './target/${{ matrix.target }}/release-clib/*.dylib' -o \
+            -path './target/${{ matrix.target }}/release-clib/*.so' \
             \) -print0 | xargs -0 -I {} mv {} artifacts
           cd artifacts
           tar -czf ${{ env.ARTIFACT_NAME }}_${{ matrix.name }}.tar.gz *

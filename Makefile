@@ -1,7 +1,6 @@
-
 .PHONY: build
 build:
-	cargo build
+	cargo build --profile release-clib
 
 .PHONY: wasm
 wasm:
