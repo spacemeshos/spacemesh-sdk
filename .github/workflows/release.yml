@@ -45,7 +45,7 @@ jobs:
       - name: Regenerate C Header and Check
         run: make diff
       - name: Compile
-        run: cargo build --release --target ${{ matrix.target }}
+        run: cargo build --release --target ${{ matrix.target }} --profile release-clib
       - name: Prepare files
         shell: bash
         run: |
