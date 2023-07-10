@@ -17,7 +17,7 @@ derivation-path = { workspace = true }
 dialoguer = "0.10.4"
 hidapi = { version = "2.3.3", default-features = false, optional = true }
 log = "0.4.19"
-num-derive = "0.3"
+num-derive = "0.4"
 num-traits = "0.2"
 parking_lot = "0.12"
 qstring = { workspace = true }
