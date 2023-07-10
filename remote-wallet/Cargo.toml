@@ -15,7 +15,7 @@ crate-type = ["staticlib", "cdylib", "rlib"]
 console = "0.15.7"
 derivation-path = { workspace = true }
 dialoguer = "0.10.4"
-hidapi = { version = "2.3.3", default-features = false, optional = true }
+hidapi = { version = "2.4.0", default-features = false, optional = true }
 log = "0.4.19"
 num-derive = "0.3"
 num-traits = "0.2"
