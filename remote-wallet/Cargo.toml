@@ -21,7 +21,7 @@ num-derive = "0.4"
 num-traits = "0.2"
 parking_lot = "0.12"
 qstring = { workspace = true }
-semver = "1.0.20"
+semver = "1.0.21"
 solana-sdk = { workspace = true }
 spacemesh-derivation-path = { workspace = true }
 thiserror = { workspace = true }
