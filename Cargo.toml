@@ -20,7 +20,7 @@ qstring = "0.7.2"
 solana-sdk = "=1.14.17"
 spacemesh-derivation-path = { path = "derivation-path", version = "=1.0.3" }
 spacemesh-remote-wallet = { path = "remote-wallet", version = "=1.0.3" }
-thiserror = "1.0.59"
+thiserror = "1.0.60"
 uriparse = "0.6.4"
 
 [profile.release-clib]
