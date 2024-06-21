@@ -40,7 +40,7 @@ jobs:
           target: ${{ matrix.target }}
       - name: Install required packages
         # libudev and pkgconfig are required for the hidapi crate
-        if: ${{ matrix.name == 'linux-amd64' || matrix.image == 'ubuntu-latest-arm-8-cores' }}
+        if: ${{ matrix.name == 'linux-amd64' || matrix.name == 'linux-arm64' }}
         run: sudo apt-get install -y libudev-dev pkg-config
       - name: Regenerate C Header and Check
         run: make diff
