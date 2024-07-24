@@ -499,12 +499,10 @@ impl RemoteWallet<hidapi::DeviceInfo> for LedgerWallet {
             }
         }
 
-        if result.len() != 64 {
-            return Err(RemoteWalletError::Protocol(
-                "Signature packet size mismatch",
-            ));
-        }
-        Ok(Signature::new(&result))
+        let array: [u8; 64] = result
+            .try_into()
+            .map_err(|_| RemoteWalletError::Protocol("Signature packet size mismatch"))?;
+        Ok(Signature::from(array))
     }
 }
 
