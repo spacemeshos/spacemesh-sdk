@@ -16,7 +16,7 @@ console = "0.15.11"
 derivation-path = { workspace = true }
 dialoguer = "0.11.0"
 hidapi = { version = "2.6.3", default-features = false, optional = true }
-log = "0.4.26"
+log = "0.4.27"
 num-derive = "0.4"
 num-traits = "0.2"
 parking_lot = "0.12"
